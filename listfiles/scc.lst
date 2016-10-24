@@ -1,0 +1,777 @@
+                ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                ;~~  [MyCA] Macro Cross Assembler V1.05 for MyCPU, (c) 2016 by Dennis Kuschel  ~~
+                ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                ;[File: scc.asm]
+                ;[ASCII]
+                
+                ;******************************************
+                ;********** Slave clock control ***********
+                ;******************************************
+                ;*******  2016 by Robin Tönniges  *********
+                ;******************************************
+                
+                ;[File: C:\Program Files (x86)\myca\include\sys.hsm]
+                ;[ASCII]
+                
+                KERN_WARMSTART      EQU 0220h
+                KERN_FILEINPUT      EQU 027Ah
+                KERN_GETINFO        EQU 02A2h
+                KERN_REGFILEDEVICE  EQU 0264h
+                KERN_FSREGISTER     EQU 02AEh
+                KERN_FSUNREGISTER   EQU 02B0h
+                KERN_GETCHECKSUM16  EQU 02B2h
+                KERN_SETMEMBORDERS  EQU 029Eh
+                KERN_SETIDLEFUNC    EQU 02EAh
+                KERN_IDLE           EQU 02ECh
+                KERN_TESTVERSION    EQU 030Ch
+                KERN_CONFIGBYTE     EQU 030Ah
+                KERN_IDEDRIVER      EQU 030Eh
+                KERN_MULTIPLEX      EQU 0312h
+                KERN_PRGMOVE        EQU 032Ah
+                
+                ;[File: scc.asm]
+                ;[File: C:\Program Files (x86)\myca\include\tsr.hsm]
+                ;[ASCII]
+                
+                ;[File: C:\Program Files (x86)\myca\include\code.hsm]
+                ;[ASCII]
+                
+                KERN_ADAPTOPCODES   EQU 02C4h
+                KERN_EXECUTEFILE    EQU 02BEh
+                KERN_EXITTSR        EQU 02C2h
+                KERN_KILLPROGRAM    EQU 02C0h
+                KERN_KILLPROGEX     EQU 0328h
+                KERN_SPECROMCALL    EQU 02B6h
+                KERN_CALLFROMROM    EQU 02B8h
+                KERN_CALLROM        EQU 02BAh
+                KERN_LIBCALL        EQU 02CAh
+                KERN_LIBSELECT      EQU 02CCh
+                KERN_LIBDESELECT    EQU 02CEh
+                KERN_LIBUNLOAD      EQU 02D0h
+                KERN_ISLOADED       EQU 02D2h
+                KERN_ASSERT         EQU 0326h
+                
+                REG_ROMPAGE  SET 3900h
+                
+                ;[File: C:\Program Files (x86)\myca\include\tsr.hsm]
+                
+                ORG 8000h
+    8000 0280    DW 8002h
+    8002 ED81    DW tsrinitfunc
+    8004 7082    DW termfunc
+    8006 ED81    DW codestart
+                
+                ;[File: scc.asm]
+                ;[File: C:\Program Files (x86)\myca\include\time.hsm]
+                ;[ASCII]
+                
+                KERN_GETSETTIME     EQU 029Ah
+                KERN_GETSETDATE     EQU 029Ch
+                
+                KERN_INSDELTIMER    EQU 02AAh
+                
+                ;[File: scc.asm]
+                ;[File: C:\Program Files (x86)\myca\include\code.hsm]
+                ;[ASCII]
+                ;[File: scc.asm]
+                ;[File: C:\Program Files (x86)\myca\include\conio.hsm]
+                ;[ASCII]
+                
+                ;-- functions --
+                KERN_KBHIT          EQU 023Ah
+                KERN_GETCH          EQU 023Ch
+                KERN_UNGETCH        EQU 023Eh
+                KERN_TESTCTRLC      EQU 0240h
+                KERN_PRINTCHAR      EQU 0242h
+                KERN_PRINTSTR       EQU 0244h
+                KERN_PRINTSTRR      EQU 0246h
+                KERN_GETCRSRPOS     EQU 0248h
+                KERN_GETSCREENSIZE  EQU 024Ah
+                KERN_GETFREELINES   EQU 024Ch
+                KERN_INPUT          EQU 0258h
+                KERN_PRINTHEX       EQU 025Eh
+                KERN_PRINTDEZ       EQU 0260h
+                KERN_SETCONSOLE     EQU 022Ch
+                KERN_GSTERMINAL     EQU 02A0h
+                KERN_QUOTEMODE      EQU 02E6h
+                KERN_GSSTDOUTVECT   EQU 02D4h
+                KERN_SETINPSPVECT   EQU 025Ah
+                KERN_SETINPUTMODE   EQU 025Ch
+                
+                ;-- flag definitions --
+                CON_DISP_LCD        SET 01h
+                CON_DISP_SCREEN     SET 02h
+                CON_DISP_TTY        SET 03h
+                CON_DISP_TTYSCR     SET 04h
+                CON_DISP_NONE       SET 0Fh
+                CON_KEYB_KEYB       SET 10h
+                CON_KEYB_TTY        SET 20h
+                CON_KEYB_NONE       SET 0F0h
+                INPMODE_BASIC       SET 0
+                INPMODE_BASICRUN    SET 1
+                INPMODE_KERNALSHELL SET 2
+                INPUTFLAG_HISTORY   SET 01h
+                INPUTFLAG_SIZE      SET 02h
+                INPUTFLAG_QUOTE     SET 04h
+                INPUTFLAG_LINE80    SET 08h
+                INPUTFLAG_TABKEY    SET 10h
+                INPUTFLAG_NOBORDER  SET 20h
+                
+                ;[File: scc.asm]
+                ;[File: C:\Program Files (x86)\myca\include\ctype.hsm]
+                ;[ASCII]
+                
+                KERN_ISPRINTABLE    EQU 024Eh
+                KERN_ISCTRLCHAR     EQU 0250h
+                KERN_ISALPHA        EQU 0252h
+                KERN_ISDIGIT        EQU 0254h
+                KERN_ASCIIPETSCII   EQU 0256h
+                KERN_STRING2NUMBER  EQU 0262h
+                
+                ;[File: scc.asm]
+                ;[File: C:\Program Files (x86)\myca\include\stdio.hsm]
+                ;[ASCII]
+                
+                ;-- functions --
+                KERN_FCLOSE         EQU 0268h
+                KERN_FOPEN          EQU 0272h
+                KERN_FPUTC          EQU 0274h
+                KERN_FGETC          EQU 0276h
+                KERN_FTELLSEEK      EQU 02E4h
+                KERN_SERIALOUT      EQU 022Eh
+                KERN_SERIALIN       EQU 0230h
+                KERN_SERIALSETUP    EQU 0232h
+                KERN_SERSETBAUD     EQU 0234h
+                KERN_SERSETPARAMS   EQU 0236h
+                KERN_SERREGISTERBH  EQU 0238h
+                KERN_RSIOSTATUS     EQU 02A6h
+                
+                KERN_FILECLOSE      EQU 0268h
+                KERN_FILEBLOCKRDWR  EQU 0278h
+                KERN_IOCTL          EQU 027Eh
+                
+                ;-- flag definitions --
+                STATUS_WRITETIMEOUT     SET 01h
+                STATUS_READTIMEOUT      SET 02h
+                STATUS_FAIL             SET 04h
+                STATUS_DEVICETYPEERROR  SET 08h
+                STATUS_USERERROR        SET 10h
+                STATUS_FILENOTFOUND     SET 20h
+                STATUS_EOI              SET 40h
+                STATUS_DEVNOTPRESENT    SET 80h
+                
+                FOPEN_RD  SET 01h
+                FOPEN_WR  SET 02h
+                FOPEN_RW  SET 03h
+                FOPEN_AP  SET 04h
+                
+                ;[File: scc.asm]
+                ;[File: C:\Program Files (x86)\myca\include\sys.hsm]
+                ;[ASCII]
+                ;[File: scc.asm]
+                ;-------------------------------------
+                ; declare variables
+                
+                DCF77LIB        EQU 60h
+                OUTPUT          EQU 2382h     ;Hardware adress of output byte (Clock on bit 0 & 1)
+                
+                REFRESH_DELAY    SET 30       ;Timer division factor for clock sync (30 = ~1s)
+                IMPULS_DELAY     SET 15       ;Timer division factor for clock impuls lenght (15 = ~0,5s)
+                
+                VAR_dcfLibEntry     DS    2
+    800A 00     VAR_refreshHandle   DB    0
+    800B 1E     VAR_refreshTimerDiv DB    REFRESH_DELAY  
+    800C 0F     VAR_impulsTimerDiv  DB    IMPULS_DELAY   
+    800D 00     VAR_startImpuls     DB    0
+    800E 00     VAR_currentHour     DB    0
+    800F 00     VAR_currentMinute   DB    0
+    8010 00     VAR_bckpFileHandle  DB    0
+    8011 00     VAR_clockChanged    DB    0
+                
+    8012 383A2F bckpFilePath        DB  "8:/etc/scc.dat",0
+    8015 455443 
+    8018 2F5343 
+    801B 432E44 
+    801E 415400 
+                
+                ;Clock data will be saved in Backup-file
+                ;-------------------------------------
+                BackupStart
+    8021 01     VAR_impuls          DB    1
+    8022 00     VAR_clockHour       DB    0
+    8023 00     VAR_clockMinute     DB    0
+                BackupEnd
+                ;-------------------------------------
+                
+                BckpFileStruct
+                dataPtr             DS   2
+    8026 0300   dataSize            DW   BackupEnd - BackupStart
+                
+    8028 000000 filePos0            DB   0,0,0
+                
+    802B 0D5343 textHelp            DB  "\rscc [-d] [-b]\r"
+    802E 43205B 
+    8031 2D445D 
+    8034 205B2D 
+    8037 425D0D 
+    803A D04152                     DB  "Parameters:\r"
+    803D 414D45 
+    8040 544552 
+    8043 533A0D 
+    8046 202020                     DB  "   -d use DCF77-Library\r"
+    8049 2D4420 
+    804C 555345 
+    804F 20C4C3 
+    8052 C63737 
+    8055 2DCC49 
+    8058 425241 
+    805B 52590D 
+    805E 202020                     DB  "   -b use Backupfile (will be created in 8:/etc/)\r",0
+    8061 2D4220 
+    8064 555345 
+    8067 20C241 
+    806A 434B55 
+    806D 504649 
+    8070 4C4520 
+    8073 285749 
+    8076 4C4C20 
+    8079 424520 
+    807C 435245 
+    807F 415445 
+    8082 442049 
+    8085 4E2038 
+    8088 3A2F45 
+    808B 54432F 
+    808E 290D00 
+                
+    8091 0DD748 textHour            DB  "\rWhich hour does the clock show? [1-12]\r",0 
+    8094 494348 
+    8097 20484F 
+    809A 555220 
+    809D 444F45 
+    80A0 532054 
+    80A3 484520 
+    80A6 434C4F 
+    80A9 434B20 
+    80AC 53484F 
+    80AF 573F20 
+    80B2 5B312D 
+    80B5 31325D 
+    80B8 0D00   
+    80BA 0DD748 textMinute          DB  "\rWhich minute does the clock show? [0-59]\r",0 
+    80BD 494348 
+    80C0 204D49 
+    80C3 4E5554 
+    80C6 452044 
+    80C9 4F4553 
+    80CC 205448 
+    80CF 452043 
+    80D2 4C4F43 
+    80D5 4B2053 
+    80D8 484F57 
+    80DB 3F205B 
+    80DE 302D35 
+    80E1 395D0D 
+    80E4 00     
+    80E5 0DC641 textDCFError        DB  "\rFailed to load DCF77-Lib!\r",0 
+    80E8 494C45 
+    80EB 442054 
+    80EE 4F204C 
+    80F1 4F4144 
+    80F4 20C4C3 
+    80F7 C63737 
+    80FA 2DCC49 
+    80FD 42210D 
+    8100 00     
+    8101 0DD54E textUnknParam       DB  "\rUnknown parameter!\r"
+    8104 4B4E4F 
+    8107 574E20 
+    810A 504152 
+    810D 414D45 
+    8110 544552 
+    8113 210D   
+    8115 534343                     DB  "scc -h for help",0
+    8118 202D48 
+    811B 20464F 
+    811E 522048 
+    8121 454C50 
+    8124 00     
+    8125 0DCE4F textNoBckp          DB  "\rNo backup file found!\r",0
+    8128 204241 
+    812B 434B55 
+    812E 502046 
+    8131 494C45 
+    8134 20464F 
+    8137 554E44 
+    813A 210D00 
+    813D 0DCE45 textBckpCreated     DB  "\rNew backup file created!\r",0
+    8140 572042 
+    8143 41434B 
+    8146 555020 
+    8149 46494C 
+    814C 452043 
+    814F 524541 
+    8152 544544 
+    8155 210D00 
+    8158 0DC552 textBckpCreateErr   DB  "\rError creating backup file!\r",0
+    815B 524F52 
+    815E 204352 
+    8161 454154 
+    8164 494E47 
+    8167 204241 
+    816A 434B55 
+    816D 502046 
+    8170 494C45 
+    8173 210D00 
+                
+    8176 0DC552 textBckpReadError   DB  "\rError reading backup file!\r"
+    8179 524F52 
+    817C 205245 
+    817F 414449 
+    8182 4E4720 
+    8185 424143 
+    8188 4B5550 
+    818B 204649 
+    818E 4C4521 
+    8191 0D     
+    8192 D45259                     DB  "Try to delete 8:/etc/scc.dat\r",0
+    8195 20544F 
+    8198 204445 
+    819B 4C4554 
+    819E 452038 
+    81A1 3A2F45 
+    81A4 54432F 
+    81A7 534343 
+    81AA 2E4441 
+    81AD 540D00 
+                
+    81B0 0DC552 textBckpWriteError  DB  "\rError writing to backup file!\r"
+    81B3 524F52 
+    81B6 205752 
+    81B9 495449 
+    81BC 4E4720 
+    81BF 544F20 
+    81C2 424143 
+    81C5 4B5550 
+    81C8 204649 
+    81CB 4C4521 
+    81CE 0D     
+    81CF D45259                     DB  "Try to delete 8:/etc/scc.dat\r",0
+    81D2 20544F 
+    81D5 204445 
+    81D8 4C4554 
+    81DB 452038 
+    81DE 3A2F45 
+    81E1 54432F 
+    81E4 534343 
+    81E7 2E4441 
+    81EA 540D00 
+                
+                ;-------------------------------------
+                ; begin of assembly code
+                
+                codestart
+                ;[File: C:\Program Files (x86)\myca\include\tsr.hsm]
+                ;[ASCII]
+                
+                tsrinitfunc
+    81ED 04        CLC
+    81EE 1BD202    JSR (KERN_ISLOADED)
+    81F1 2C        CLA
+    81F2 17FF81    JPC exit_tsr
+    81F5 1A0082    JSR initfunc
+    81F8 20        TAX
+    81F9 18FF81    JNZ exit_tsr
+    81FC 11C202    JMP (KERN_EXITTSR)
+                exit_tsr
+    81FF 1F        RTS
+                
+                ;[File: scc.asm]
+                initfunc  
+                
+                        ;move this program to a separate memory page
+                        ;LPT  #codestart
+                        ;LDA  #0Eh
+                        ;JSR  (KERN_MULTIPLEX)  ;may fail on older kernel
+                
+                ;Get parameter from console
+    8200 5029           LDX #29h
+    8202 5707           LDY #07h
+                
+    8204 EA     skipPar LPA    
+    8205 195682         JPZ init0
+    8208 7020           CMP #20h
+    820A 180482         JNZ skipPar
+                
+    820D EA     _skp0   LPA
+    820E 195682         JPZ init0
+    8211 7020           CMP #20h
+    8213 190D82         JPZ _skp0
+                
+    8216 702D           CMP #2Dh    
+    8218 185682         JNZ init0
+    821B EA             LPA         ;'-' found
+    821C 195682         JPZ init0
+    821F 7044           CMP #'d'    ;Parameter -d means with DCF77-Lib
+    8221 182F82         JNZ _skp1
+    8224 7A             PHR
+    8225 1A5F83         JSR loadDCF77
+    8228 8A             PLR
+    8229 175382         JPC _skp3
+    822C 100D82         JMP _skp0
+    822F 7042   _skp1   CMP #'b'    ;Parameter -b means with Backupfile
+    8231 183F82         JNZ _skp2
+    8234 7A             PHR
+    8235 1A9F83         JSR getBackup
+    8238 8A             PLR
+    8239 175382         JPC _skp3
+    823C 100D82         JMP _skp0
+    823F 7048   _skp2   CMP #'h'    ;Parameter -h means show help
+    8241 184D82         JNZ _skp4
+    8244 6C2B80         LPT #textHelp
+    8247 1B4402         JSR (KERN_PRINTSTR)
+    824A 105382         JMP _skp3
+    824D 6C0181 _skp4   LPT #textUnknParam
+    8250 1B4402         JSR (KERN_PRINTSTR)
+    8253 3001   _skp3   LDA #1
+    8255 1F             RTS          
+                
+    8256 321080 init0   LDAA VAR_bckpFileHandle
+    8259 186482         JNZ init1
+                
+                        ;Send sync impuls
+    825C 3001           LDA #1
+    825E 1AD282         JSR imp0
+                
+                        ;Get clock data from user
+    8261 1A7C83         JSR getClock        
+                
+                        ;Setup timer interrupt (Refresh cycle) 
+    8264 2C     init1   CLA
+    8265 6C8882         LPT  #refreshInt  
+    8268 1B1203         JSR  (KERN_MULTIPLEX) 
+    826B 420A80         STAA VAR_refreshHandle  ;Save adress of timerhandle
+                
+    826E 2C             CLA
+    826F 1F             RTS
+                
+                termfunc  
+                        ;uninstall idle function
+    8270 6C5283         LPT #idle
+    8273 04             CLC
+    8274 1BEA02         JSR (KERN_SETIDLEFUNC)
+                
+                        ;uninstall timer interrupt
+    8277 520A80         LDXA VAR_refreshHandle
+    827A 198282         JPZ  term0
+    827D 3001           LDA  #1
+    827F 1B1203         JSR  (KERN_MULTIPLEX)  
+                
+                        ;unload dcf lib
+    8282 3060   term0   LDA #DCF77LIB
+    8284 1BD002         JSR (KERN_LIBUNLOAD)
+    8287 1F             RTS
+                
+                ;--------------------------------------------------------- 
+                ;Timer interrupt (Check system time, set slave clock, sync with dcf77)
+                ;---------------------------------------------------------   
+                ;Check system time -> set clock
+                refreshInt
+    8288 8D0B80         DECA VAR_refreshTimerDiv
+    828B 18BB82         JNZ impuls
+    828E 301E           LDA #REFRESH_DELAY
+    8290 420B80         STAA VAR_refreshTimerDiv    
+                
+                        ;Get system time
+    8293 04             CLC
+    8294 1B9A02         JSR (KERN_GETSETTIME)
+    8297 700D           CMP #13
+    8299 169E82         JNC ref0
+                        ;Hour is greater than 12 -> subtract 12
+    829C 900C           SBC #12
+    829E 420E80 ref0    STAA VAR_currentHour
+    82A1 550F80         STXA VAR_currentMinute
+                
+                        ;Compare clock and system time
+    82A4 320E80         LDAA VAR_currentHour
+    82A7 722280         CMPA VAR_clockHour
+    82AA 18B682         JNZ ref1
+    82AD 320F80         LDAA VAR_currentMinute
+    82B0 722380         CMPA VAR_clockMinute
+    82B3 19BB82         JPZ impuls
+    82B6 3001   ref1    LDA #1
+    82B8 420D80         STAA VAR_startImpuls
+                
+                ;Generate clock impuls
+                impuls
+    82BB 8D0C80         DECA VAR_impulsTimerDiv
+    82BE 180B83         JNZ dcf77
+    82C1 300F           LDA #IMPULS_DELAY
+    82C3 420C80         STAA VAR_impulsTimerDiv
+                
+                        ;Set output to 0
+    82C6 320D80         LDAA VAR_startImpuls
+    82C9 18D282         JNZ imp0
+    82CC 2F8223         STZ OUTPUT
+    82CF 100B83         JMP dcf77
+                
+                        ;Set output to 10 or 01
+    82D2 322180 imp0    LDAA VAR_impuls
+    82D5 7003           CMP #3
+    82D7 18DF82         JNZ imp1
+    82DA 3001           LDA #1
+    82DC 422180         STAA VAR_impuls
+    82DF 428223 imp1    STAA OUTPUT
+    82E2 7D2180         INCA VAR_impuls
+    82E5 2F0D80         STZ VAR_startImpuls
+                
+                        ;Increment clock time
+    82E8 7D2380         INCA VAR_clockMinute
+    82EB 322380         LDAA VAR_clockMinute
+    82EE 703C           CMP #60
+    82F0 180683         JNZ imp2
+    82F3 2F2380         STZ VAR_clockMinute
+    82F6 7D2280         INCA VAR_clockHour
+    82F9 322280         LDAA VAR_clockHour
+    82FC 700D           CMP #13
+    82FE 180683         JNZ imp2
+    8301 900C           SBC #12
+    8303 422280         STAA VAR_clockHour 
+                
+    8306 3001   imp2    LDA #1
+    8308 421180         STAA VAR_clockChanged
+                
+                ;Sync system time with DCF77
+                dcf77
+                        ;DCF77-Lib loaded?
+    830B 6C0880         LPT #VAR_dcfLibEntry
+    830E EA             LPA
+    830F 196084         JPZ _RTS    
+                
+                        ;Get seconds
+    8312 3001           LDA #01h
+    8314 1B0880         JSR (VAR_dcfLibEntry)
+    8317 176084         JPC _RTS
+    831A 186084         JNZ _RTS    ;Sync every minute
+    831D 22             TAY
+                        ;Get minutes
+    831E 3002           LDA #02h
+    8320 1B0880         JSR (VAR_dcfLibEntry)
+    8323 176084         JPC _RTS
+                        ;JNZ _RTS    ;Sync every hour
+    8326 20             TAX
+                        ;Get hours
+    8327 3003           LDA #03h
+    8329 1B0880         JSR (VAR_dcfLibEntry)
+    832C 176084         JPC _RTS
+                        ;JNZ _RTS    ;Sync every day
+                
+                        ;Set system time
+    832F 05             SEC
+    8330 1B9A02         JSR (KERN_GETSETTIME)
+                
+                        ;Get year
+    8333 3007           LDA #07h
+    8335 1B0880         JSR (VAR_dcfLibEntry)
+    8338 176084         JPC _RTS
+    833B 22             TAY
+                        ;Get month
+    833C 3006           LDA #06h
+    833E 1B0880         JSR (VAR_dcfLibEntry)
+    8341 176084         JPC _RTS
+    8344 20             TAX
+                        ;Get day
+    8345 3004           LDA #04h
+    8347 1B0880         JSR (VAR_dcfLibEntry)
+    834A 176084         JPC _RTS
+                
+                        ;Set system date
+    834D 05             SEC
+    834E 1B9C02         JSR (KERN_GETSETDATE)
+                
+    8351 1F             RTS
+                
+                ;--------------------------------------------------------- 
+                ;Idle function (Save slave clock value in Backupfile)
+                ;---------------------------------------------------------  
+                idle        
+    8352 321180         LDAA VAR_clockChanged
+    8355 196084         JPZ _RTS
+    8358 1A3984         JSR writeBackup
+    835B 2F1180         STZ VAR_clockChanged
+    835E 1F             RTS
+                
+                ;--------------------------------------------------------- 
+                ;Helper functions   
+                ;---------------------------------------------------------  
+                ;Load DCF77-Lib
+                ;Carry = 0 on success
+                loadDCF77
+    835F 3060           LDA #DCF77LIB
+    8361 1BCC02         JSR (KERN_LIBSELECT)
+    8364 166F83         JNC lL0
+    8367 6CE580         LPT #textDCFError   
+    836A 1B4402         JSR (KERN_PRINTSTR)
+    836D 05             SEC
+    836E 1F             RTS
+    836F 3008   lL0     LDA #08h
+    8371 1BCA02         JSR (KERN_LIBCALL)
+    8374 6E0880         SPTA VAR_dcfLibEntry
+    8377 1BCE02         JSR (KERN_LIBDESELECT)
+    837A 04             CLC
+    837B 1F             RTS
+                
+                ;Get clock data from user
+                getClock
+                        ;Get clock hour
+    837C 6C9180         LPT #textHour
+    837F 1B4402         JSR (KERN_PRINTSTR)
+    8382 2C             CLA
+    8383 2D             CLX
+    8384 1B5802         JSR (KERN_INPUT)
+    8387 1B6202         JSR (KERN_STRING2NUMBER)
+    838A 422280         STAA VAR_clockHour
+                
+                        ;Get clock minute
+    838D 6CBA80         LPT #textMinute
+    8390 1B4402         JSR (KERN_PRINTSTR)
+    8393 2C             CLA
+    8394 2D             CLX
+    8395 1B5802         JSR (KERN_INPUT)
+    8398 1B6202         JSR (KERN_STRING2NUMBER)
+    839B 422380         STAA VAR_clockMinute
+                
+    839E 1F             RTS
+                
+                ;Check if backup file exists
+                ;Carry = 0 on success
+                getBackup         
+    839F 1A1284         JSR readBackup
+    83A2 16C583         JNC gB2
+                
+                        ;No backup found -> Creating one
+    83A5 6C2581         LPT #textNoBckp 
+    83A8 1B4402         JSR (KERN_PRINTSTR)
+    83AB 1A3984         JSR writeBackup
+    83AE 16BC83         JNC gB1
+    83B1 6C5881         LPT #textBckpCreateErr ;Error creating backup
+    83B4 1B4402         JSR (KERN_PRINTSTR)
+    83B7 2F1080         STZ VAR_bckpFileHandle
+    83BA 05             SEC
+    83BB 1F             RTS       
+    83BC 6C3D81 gB1     LPT #textBckpCreated
+    83BF 1B4402         JSR (KERN_PRINTSTR)
+    83C2 2F1080         STZ VAR_bckpFileHandle
+                
+                        ;Setup idle function (Backup saving)
+    83C5 6C5283 gB2     LPT #idle
+    83C8 05             SEC
+    83C9 1BEA02         JSR (KERN_SETIDLEFUNC)
+    83CC 04             CLC
+    83CD 1F             RTS
+                
+                ;Set pointer to backup data
+                setBlockPtr
+    83CE 6C2180         LPT #BackupStart
+    83D1 6E2480         SPTA dataPtr
+    83D4 3003           LDA #BackupEnd - BackupStart
+    83D6 422680         STAA dataSize
+    83D9 1F             RTS
+                
+                ;Set filepointer to first position   
+                setFilePtr       
+    83DA 6C2880         LPT #filePos0
+    83DD 321080         LDAA VAR_bckpFileHandle
+    83E0 05             SEC
+    83E1 1BE402         JSR (KERN_FTELLSEEK)
+    83E4 1F             RTS
+                
+                ;Open Backupfile (Read only)
+                ;Carry = 0 on success
+                openBackupRD 
+    83E5 6C1280         LPT #bckpFilePath
+    83E8 3001           LDA #FOPEN_RD
+    83EA 1B7202         JSR (KERN_FOPEN)
+    83ED 421080         STAA VAR_bckpFileHandle
+    83F0 20             TAX
+    83F1 18F683         JNZ oBRD0
+    83F4 05             SEC
+    83F5 4D             SKA
+    83F6 04     oBRD0   CLC
+    83F7 1F             RTS
+                
+                ;Open Backupfile (Read/Write)        
+                ;Carry = 0 on success        
+                openBackupRW        
+    83F8 6C1280         LPT #bckpFilePath
+    83FB 3003           LDA #FOPEN_RW
+    83FD 1B7202         JSR (KERN_FOPEN)
+    8400 421080         STAA VAR_bckpFileHandle
+    8403 20             TAX
+    8404 180984         JNZ oBRW0
+    8407 05             SEC
+    8408 4D             SKA
+    8409 04     oBRW0   CLC
+    840A 1F             RTS
+                
+                ;Close Backupfile   
+                closeBackup
+    840B 321080         LDAA VAR_bckpFileHandle
+    840E 1B6802         JSR (KERN_FCLOSE)
+    8411 1F             RTS
+                
+                ;Read data from Backupfile
+                ;Carry = 0 on success
+                readBackup
+    8412 1AE583         JSR openBackupRD
+    8415 161984         JNC rB0
+    8418 1F             RTS
+    8419 1ACE83 rB0     JSR setBlockPtr
+    841C 1ADA83         JSR setFilePtr   
+    841F 6C2480         LPT #BckpFileStruct
+    8422 321080         LDAA VAR_bckpFileHandle
+    8425 04             CLC ;BlockRead
+    8426 1B7802         JSR (KERN_FILEBLOCKRDWR)
+    8429 0B             PHP
+    842A 1A0B84         JSR closeBackup
+    842D 0F             PLP
+    842E 166084         JNC _RTS
+    8431 6C7681         LPT #textBckpReadError  ;Error reading backup
+    8434 1B4402         JSR (KERN_PRINTSTR)
+    8437 05             SEC
+    8438 1F             RTS
+                
+                ;Wirte data to Backupfile
+                ;Carry = 0 on success
+                writeBackup        
+    8439 1AF883         JSR openBackupRW
+    843C 164084         JNC wB0
+    843F 1F             RTS
+    8440 1ACE83 wB0     JSR setBlockPtr
+    8443 1ADA83         JSR setFilePtr       
+    8446 6C2480         LPT #BckpFileStruct
+    8449 321080         LDAA VAR_bckpFileHandle
+    844C 05             SEC ;BlockWrite
+    844D 1B7802         JSR (KERN_FILEBLOCKRDWR)
+    8450 0B             PHP
+    8451 1A0B84         JSR closeBackup 
+    8454 0F             PLP
+    8455 166084         JNC _RTS     
+    8458 6CB081         LPT #textBckpWriteError  ;Error writing backup
+    845B 1B4402         JSR (KERN_PRINTSTR)
+    845E 05             SEC
+    845F 1F             RTS
+                
+    8460 1F     _RTS    RTS
+                
+
+
+Segment Table:
+**************
+Segment Name                 Startaddr  Endaddr     Size  Type
+=========================================================================
+default                           8000     8460      461  CODE  fixed
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+No errors found.
