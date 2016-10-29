@@ -1,2 +1,2 @@
 # MyCPU_PRG_SCC
-## Hardware
+## Rack extension
