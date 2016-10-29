@@ -7,4 +7,4 @@ A MyCPU program to controls a slave clock (https://en.wikipedia.org/wiki/Slave_c
 
 ## Software
 - scc.asm (Main program)
-- sl60dcf77.asm (Library for DCF77 decoding (Can be found in https://github.com/rtoenniges/MyCPU_LIB_DCF77))
+- sl60dcf77.asm (Library for DCF77 decoding (Can be found at https://github.com/rtoenniges/MyCPU_LIB_DCF77))
