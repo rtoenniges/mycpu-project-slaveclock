@@ -1,2 +1,2 @@
-# MyCPU_PRG_SCC
-## Hardware
+# Hardware
+## External module (Basic board without DCF77-Input)
