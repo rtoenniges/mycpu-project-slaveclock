@@ -20,7 +20,7 @@
 ; declare variables
 
 DCF77LIB        EQU 60h
-OUTPUT          EQU 2382h     ;Hardware adress of output byte (Clock on bit 0 & 1)
+OUTPUT          EQU 2382h     ;Hardware adress of SCC-Board (Clock on bit 0 & 1)
 
 REFRESH_DELAY    SET 30       ;Timer division factor for clock sync (30 = ~1s)
 IMPULS_DELAY     SET 15       ;Timer division factor for clock impuls lenght (15 = ~0,5s)
@@ -209,7 +209,9 @@ impuls
         ;Set output to 0
         LDAA VAR_startImpuls
         JNZ imp0
-        STZ OUTPUT
+        LDAA OUTPUT
+        AND #FCh
+        STAA OUTPUT
         JMP dcf77
         
         ;Set output to 10 or 01
@@ -218,7 +220,10 @@ imp0    LDAA VAR_impuls
         JNZ imp1
         LDA #1
         STAA VAR_impuls
-imp1    STAA OUTPUT
+imp1    LDAA OUTPUT
+        AND #FCh
+        ORAA VAR_impuls
+        STAA OUTPUT
         INCA VAR_impuls
         STZ VAR_startImpuls
         
