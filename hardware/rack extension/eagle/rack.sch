@@ -16334,7 +16334,7 @@ Siemens, distributor Buerklin, 11G766</description>
 <instance part="X3" gate="-3" x="12.7" y="195.58"/>
 <instance part="S1" gate="B" x="195.58" y="53.34" rot="R270"/>
 <instance part="S1" gate="A" x="195.58" y="68.58" rot="R270"/>
-<instance part="X4" gate="-1" x="218.44" y="55.88" rot="R180"/>
+<instance part="X4" gate="-1" x="218.44" y="50.8" rot="R180"/>
 <instance part="X4" gate="-2" x="218.44" y="63.5" rot="R180"/>
 <instance part="P+9" gate="1" x="152.4" y="27.94"/>
 <instance part="SV4" gate="G$1" x="200.66" y="210.82" rot="R180"/>
@@ -16559,10 +16559,10 @@ Siemens, distributor Buerklin, 11G766</description>
 <wire x1="213.36" y1="175.26" x2="215.9" y2="175.26" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="S1" gate="B" pin="S"/>
 <pinref part="GND9" gate="1" pin="GND"/>
-<wire x1="200.66" y1="50.8" x2="205.74" y2="50.8" width="0.1524" layer="91"/>
-<wire x1="205.74" y1="50.8" x2="205.74" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="205.74" y1="45.72" x2="205.74" y2="55.88" width="0.1524" layer="91"/>
+<pinref part="S1" gate="B" pin="O"/>
+<wire x1="205.74" y1="55.88" x2="200.66" y2="55.88" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC7" gate="A" pin="A4"/>
@@ -17274,13 +17274,6 @@ Siemens, distributor Buerklin, 11G766</description>
 <wire x1="200.66" y1="63.5" x2="213.36" y2="63.5" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$33" class="0">
-<segment>
-<pinref part="S1" gate="B" pin="O"/>
-<pinref part="X4" gate="-1" pin="KL"/>
-<wire x1="200.66" y1="55.88" x2="213.36" y2="55.88" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$34" class="0">
 <segment>
 <pinref part="D3" gate="G$1" pin="A"/>
@@ -17361,6 +17354,13 @@ Siemens, distributor Buerklin, 11G766</description>
 <pinref part="LED4" gate="G$1" pin="A"/>
 <pinref part="R9" gate="G$1" pin="2"/>
 <wire x1="205.74" y1="175.26" x2="200.66" y2="175.26" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$33" class="0">
+<segment>
+<pinref part="S1" gate="B" pin="S"/>
+<pinref part="X4" gate="-1" pin="KL"/>
+<wire x1="200.66" y1="50.8" x2="213.36" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
