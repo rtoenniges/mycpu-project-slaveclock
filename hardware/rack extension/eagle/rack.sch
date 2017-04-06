@@ -1935,45 +1935,6 @@ W = angled&lt;p&gt;
 <rectangle x1="1.016" y1="1.016" x2="1.524" y2="1.524" layer="51"/>
 <rectangle x1="3.556" y1="1.016" x2="4.064" y2="1.524" layer="51"/>
 </package>
-<package name="MA03-2">
-<description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
-<wire x1="-3.175" y1="2.54" x2="-1.905" y2="2.54" width="0.1524" layer="21"/>
-<wire x1="-1.905" y1="2.54" x2="-1.27" y2="1.905" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="1.905" x2="-0.635" y2="2.54" width="0.1524" layer="21"/>
-<wire x1="-0.635" y1="2.54" x2="0.635" y2="2.54" width="0.1524" layer="21"/>
-<wire x1="0.635" y1="2.54" x2="1.27" y2="1.905" width="0.1524" layer="21"/>
-<wire x1="-3.175" y1="2.54" x2="-3.81" y2="1.905" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="1.905" x2="1.905" y2="2.54" width="0.1524" layer="21"/>
-<wire x1="1.905" y1="2.54" x2="3.175" y2="2.54" width="0.1524" layer="21"/>
-<wire x1="3.175" y1="2.54" x2="3.81" y2="1.905" width="0.1524" layer="21"/>
-<wire x1="3.81" y1="1.905" x2="3.81" y2="-1.905" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="-1.905" x2="-1.905" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="-1.905" x2="0.635" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="0.635" y1="-2.54" x2="-0.635" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="-0.635" y1="-2.54" x2="-1.27" y2="-1.905" width="0.1524" layer="21"/>
-<wire x1="-3.81" y1="1.905" x2="-3.81" y2="-1.905" width="0.1524" layer="21"/>
-<wire x1="-3.81" y1="-1.905" x2="-3.175" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="-1.905" y1="-2.54" x2="-3.175" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="3.81" y1="-1.905" x2="3.175" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="3.175" y1="-2.54" x2="1.905" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="1.905" y1="-2.54" x2="1.27" y2="-1.905" width="0.1524" layer="21"/>
-<pad name="1" x="-2.54" y="-1.27" drill="1.016"/>
-<pad name="3" x="0" y="-1.27" drill="1.016" shape="octagon"/>
-<pad name="5" x="2.54" y="-1.27" drill="1.016" shape="octagon"/>
-<pad name="2" x="-2.54" y="1.27" drill="1.016" shape="octagon"/>
-<pad name="4" x="0" y="1.27" drill="1.016" shape="octagon"/>
-<pad name="6" x="2.54" y="1.27" drill="1.016" shape="octagon"/>
-<text x="-3.175" y="-4.191" size="1.27" layer="21" ratio="10">1</text>
-<text x="-3.81" y="2.921" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="4.064" y="0.635" size="1.27" layer="21" ratio="10">6</text>
-<text x="-1.27" y="-4.191" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
-<rectangle x1="-0.254" y1="-1.524" x2="0.254" y2="-1.016" layer="51"/>
-<rectangle x1="-2.794" y1="-1.524" x2="-2.286" y2="-1.016" layer="51"/>
-<rectangle x1="2.286" y1="-1.524" x2="2.794" y2="-1.016" layer="51"/>
-<rectangle x1="-2.794" y1="1.016" x2="-2.286" y2="1.524" layer="51"/>
-<rectangle x1="-0.254" y1="1.016" x2="0.254" y2="1.524" layer="51"/>
-<rectangle x1="2.286" y1="1.016" x2="2.794" y2="1.524" layer="51"/>
-</package>
 <package name="MA03-1">
 <description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
 <wire x1="-3.175" y1="1.27" x2="-1.905" y2="1.27" width="0.1524" layer="21"/>
@@ -2032,26 +1993,6 @@ W = angled&lt;p&gt;
 <pin name="7" x="7.62" y="2.54" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="8" x="-7.62" y="2.54" visible="pad" length="middle" direction="pas" swaplevel="1"/>
 </symbol>
-<symbol name="MA03-2">
-<wire x1="3.81" y1="-5.08" x2="-3.81" y2="-5.08" width="0.4064" layer="94"/>
-<wire x1="-3.81" y1="5.08" x2="-3.81" y2="-5.08" width="0.4064" layer="94"/>
-<wire x1="3.81" y1="-5.08" x2="3.81" y2="5.08" width="0.4064" layer="94"/>
-<wire x1="-3.81" y1="5.08" x2="3.81" y2="5.08" width="0.4064" layer="94"/>
-<wire x1="1.27" y1="2.54" x2="2.54" y2="2.54" width="0.6096" layer="94"/>
-<wire x1="1.27" y1="0" x2="2.54" y2="0" width="0.6096" layer="94"/>
-<wire x1="1.27" y1="-2.54" x2="2.54" y2="-2.54" width="0.6096" layer="94"/>
-<wire x1="-2.54" y1="2.54" x2="-1.27" y2="2.54" width="0.6096" layer="94"/>
-<wire x1="-2.54" y1="0" x2="-1.27" y2="0" width="0.6096" layer="94"/>
-<wire x1="-2.54" y1="-2.54" x2="-1.27" y2="-2.54" width="0.6096" layer="94"/>
-<text x="-3.81" y="-7.62" size="1.778" layer="96">&gt;VALUE</text>
-<text x="-3.81" y="5.842" size="1.778" layer="95">&gt;NAME</text>
-<pin name="1" x="7.62" y="-2.54" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
-<pin name="3" x="7.62" y="0" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
-<pin name="5" x="7.62" y="2.54" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
-<pin name="2" x="-7.62" y="-2.54" visible="pad" length="middle" direction="pas" swaplevel="1"/>
-<pin name="4" x="-7.62" y="0" visible="pad" length="middle" direction="pas" swaplevel="1"/>
-<pin name="6" x="-7.62" y="2.54" visible="pad" length="middle" direction="pas" swaplevel="1"/>
-</symbol>
 <symbol name="MA03-1">
 <wire x1="3.81" y1="-5.08" x2="-1.27" y2="-5.08" width="0.4064" layer="94"/>
 <wire x1="1.27" y1="2.54" x2="2.54" y2="2.54" width="0.6096" layer="94"/>
@@ -2084,32 +2025,6 @@ W = angled&lt;p&gt;
 <connect gate="G$1" pin="6" pad="6"/>
 <connect gate="G$1" pin="7" pad="7"/>
 <connect gate="G$1" pin="8" pad="8"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="MF" value="" constant="no"/>
-<attribute name="MPN" value="" constant="no"/>
-<attribute name="OC_FARNELL" value="unknown" constant="no"/>
-<attribute name="OC_NEWARK" value="unknown" constant="no"/>
-</technology>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="MA03-2" prefix="SV" uservalue="yes">
-<description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
-<gates>
-<gate name="1" symbol="MA03-2" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="MA03-2">
-<connects>
-<connect gate="1" pin="1" pad="1"/>
-<connect gate="1" pin="2" pad="2"/>
-<connect gate="1" pin="3" pad="3"/>
-<connect gate="1" pin="4" pad="4"/>
-<connect gate="1" pin="5" pad="5"/>
-<connect gate="1" pin="6" pad="6"/>
 </connects>
 <technologies>
 <technology name="">
@@ -16167,23 +16082,22 @@ Siemens, distributor Buerklin, 11G766</description>
 <part name="X1" library="con-vg" deviceset="MAC64L" device=""/>
 <part name="K1" library="relay" deviceset="APF30212C" device=""/>
 <part name="K2" library="relay" deviceset="APF30212C" device=""/>
-<part name="IC1" library="74xx-eu" deviceset="74*139" device="N" technology="ACT"/>
+<part name="IC1" library="74xx-eu" deviceset="74*139" device="N" technology="HC" value="74HC139N"/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
 <part name="P+2" library="supply1" deviceset="VCC" device=""/>
 <part name="P+3" library="supply1" deviceset="+12V" device=""/>
 <part name="P+4" library="supply1" deviceset="+12V" device=""/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="IC2" library="74xx-eu" deviceset="74*574" device="N" technology="AC"/>
+<part name="IC2" library="74xx-eu" deviceset="74*574" device="N" technology="HC" value="74HC574N"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
-<part name="IC3" library="74xx-eu" deviceset="74*32" device="N" technology="AC"/>
+<part name="IC3" library="74xx-eu" deviceset="74*32" device="N" technology="HC" value="74HC32N"/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="Q1" library="transistor-npn" deviceset="BC547*" device=""/>
 <part name="Q2" library="transistor-npn" deviceset="BC547*" device=""/>
 <part name="SV1" library="con-lstb" deviceset="MA04-2" device=""/>
-<part name="SV2" library="con-lstb" deviceset="MA03-2" device=""/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+5" library="supply1" deviceset="VCC" device=""/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
@@ -16209,10 +16123,10 @@ Siemens, distributor Buerklin, 11G766</description>
 <part name="C6" library="rcl" deviceset="CPOL-EU" device="TT2D5" value="10uF/16V"/>
 <part name="C7" library="rcl" deviceset="CPOL-EU" device="TT2D5" value="10uF/16V"/>
 <part name="D3" library="diode" deviceset="1N4148" device="DO35-7"/>
-<part name="IC4" library="74xx-eu" deviceset="74*86" device="N" technology="AC"/>
-<part name="IC5" library="74xx-eu" deviceset="74*04" device="N" technology="AC"/>
-<part name="IC6" library="74xx-eu" deviceset="74*14" device="N" technology="AC"/>
-<part name="C8" library="rcl" deviceset="CPOL-EU" device="E2,5-6E"/>
+<part name="IC4" library="74xx-eu" deviceset="74*86" device="N" technology="HC" value="74HC86N"/>
+<part name="IC5" library="74xx-eu" deviceset="74*04" device="N" technology="HC" value="74HC04N"/>
+<part name="IC6" library="74xx-eu" deviceset="74*14" device="N" technology="HC" value="74HC14N"/>
+<part name="C8" library="rcl" deviceset="CPOL-EU" device="E2,5-6E" value="2µ2"/>
 <part name="R6" library="rcl" deviceset="R-EU_" device="0204/7" value="270"/>
 <part name="SV3" library="con-lstb" deviceset="MA03-1" device=""/>
 <part name="R7" library="rcl" deviceset="R-EU_" device="0204/7" value="1k"/>
@@ -16229,11 +16143,12 @@ Siemens, distributor Buerklin, 11G766</description>
 <part name="X4" library="con-wago-500" deviceset="W237-102" device=""/>
 <part name="P+9" library="supply1" deviceset="+12V" device=""/>
 <part name="SV4" library="con-lstb" deviceset="MA03-1" device=""/>
-<part name="IC7" library="74xx-eu" deviceset="74*541" device="N" technology="AC"/>
+<part name="IC7" library="74xx-eu" deviceset="74*541" device="N" technology="HC" value="74HC541N"/>
 <part name="C12" library="rcl" deviceset="C-EU" device="050-024X044" value="100n"/>
 <part name="R9" library="rcl" deviceset="R-EU_" device="0204/7" value="390"/>
 <part name="LED4" library="led" deviceset="LED" device="B155"/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
+<part name="SV5" library="con-lstb" deviceset="MA03-1" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -16274,7 +16189,6 @@ Siemens, distributor Buerklin, 11G766</description>
 <instance part="Q1" gate="G$1" x="167.64" y="134.62"/>
 <instance part="Q2" gate="G$1" x="167.64" y="109.22" rot="MR180"/>
 <instance part="SV1" gate="G$1" x="104.14" y="68.58"/>
-<instance part="SV2" gate="1" x="104.14" y="45.72"/>
 <instance part="GND7" gate="1" x="160.02" y="121.92" rot="R270"/>
 <instance part="P+5" gate="VCC" x="22.86" y="220.98"/>
 <instance part="GND8" gate="1" x="22.86" y="182.88"/>
@@ -16343,6 +16257,7 @@ Siemens, distributor Buerklin, 11G766</description>
 <instance part="R9" gate="G$1" x="195.58" y="175.26"/>
 <instance part="LED4" gate="G$1" x="208.28" y="175.26" rot="R90"/>
 <instance part="GND13" gate="1" x="116.84" y="111.76"/>
+<instance part="SV5" gate="G$1" x="104.14" y="35.56" rot="R90"/>
 </instances>
 <busses>
 <bus name="D[0..7]">
@@ -16977,15 +16892,17 @@ Siemens, distributor Buerklin, 11G766</description>
 <net name="N$6" class="0">
 <segment>
 <pinref part="IC1" gate="B" pin="Y1"/>
-<wire x1="96.52" y1="45.72" x2="93.98" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="SV2" gate="1" pin="4"/>
+<pinref part="SV5" gate="G$1" pin="3"/>
+<wire x1="93.98" y1="45.72" x2="101.6" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="45.72" x2="101.6" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$7" class="0">
 <segment>
 <pinref part="IC1" gate="B" pin="Y0"/>
-<pinref part="SV2" gate="1" pin="6"/>
-<wire x1="93.98" y1="48.26" x2="96.52" y2="48.26" width="0.1524" layer="91"/>
+<pinref part="SV5" gate="G$1" pin="1"/>
+<wire x1="93.98" y1="48.26" x2="106.68" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="48.26" x2="106.68" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -17295,20 +17212,17 @@ Siemens, distributor Buerklin, 11G766</description>
 </net>
 <net name="N$36" class="0">
 <segment>
-<pinref part="SV2" gate="1" pin="3"/>
-<pinref part="SV2" gate="1" pin="5"/>
-<wire x1="116.84" y1="48.26" x2="111.76" y2="48.26" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="48.26" x2="116.84" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="45.72" x2="116.84" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="IC3" gate="A" pin="I1"/>
 <wire x1="116.84" y1="55.88" x2="121.92" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="111.76" y1="45.72" x2="116.84" y2="45.72" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="45.72" x2="116.84" y2="48.26" width="0.1524" layer="91"/>
-<junction x="116.84" y="48.26"/>
 <wire x1="116.84" y1="55.88" x2="116.84" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="116.84" y1="81.28" x2="114.3" y2="81.28" width="0.1524" layer="91"/>
 <pinref part="IC3" gate="B" pin="I1"/>
 <wire x1="114.3" y1="81.28" x2="114.3" y2="83.82" width="0.1524" layer="91"/>
 <junction x="116.84" y="55.88"/>
+<pinref part="SV5" gate="G$1" pin="2"/>
+<wire x1="116.84" y1="45.72" x2="104.14" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="45.72" x2="104.14" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="/RD" class="0">
