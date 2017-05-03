@@ -16156,8 +16156,8 @@ Siemens, distributor Buerklin, 11G766</description>
 <text x="93.98" y="76.2" size="1.778" layer="91">Address selection</text>
 <text x="0" y="205.74" size="2.54" layer="91">DCF77</text>
 <text x="-2.54" y="200.66" size="1.778" layer="91">+5V</text>
-<text x="-2.54" y="195.58" size="1.778" layer="91">GND</text>
-<text x="-2.54" y="190.5" size="1.778" layer="91">Signal</text>
+<text x="-2.54" y="189.484" size="1.778" layer="91">GND</text>
+<text x="-2.794" y="195.072" size="1.778" layer="91">Signal</text>
 <text x="226.06" y="17.78" size="2.54" layer="91">Clock</text>
 <text x="50.8" y="210.82" size="1.778" layer="91">Pull-Up</text>
 <text x="226.06" y="58.42" size="2.54" layer="91">Ext. Supply</text>
@@ -17162,6 +17162,7 @@ Siemens, distributor Buerklin, 11G766</description>
 <junction x="45.72" y="195.58"/>
 <pinref part="X3" gate="-3" pin="KL"/>
 <wire x1="33.02" y1="195.58" x2="17.78" y2="195.58" width="0.1524" layer="91"/>
+<junction x="33.02" y="195.58"/>
 </segment>
 </net>
 <net name="N$31" class="0">
