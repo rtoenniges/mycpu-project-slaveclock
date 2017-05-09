@@ -16129,7 +16129,7 @@ Siemens, distributor Buerklin, 11G766</description>
 <part name="C8" library="rcl" deviceset="CPOL-EU" device="E2,5-6E" value="2µ2"/>
 <part name="R6" library="rcl" deviceset="R-EU_" device="0204/7" value="270"/>
 <part name="SV3" library="con-lstb" deviceset="MA03-1" device=""/>
-<part name="R7" library="rcl" deviceset="R-EU_" device="0204/7" value="1k"/>
+<part name="R7" library="rcl" deviceset="R-EU_" device="0204/7" value="15k"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="C9" library="rcl" deviceset="C-EU" device="050-024X044" value="100n"/>
 <part name="C10" library="rcl" deviceset="C-EU" device="050-024X044" value="100n"/>
@@ -16472,6 +16472,7 @@ Siemens, distributor Buerklin, 11G766</description>
 <pinref part="LED4" gate="G$1" pin="C"/>
 <wire x1="215.9" y1="175.26" x2="215.9" y2="167.64" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="175.26" x2="215.9" y2="175.26" width="0.1524" layer="91"/>
+<junction x="215.9" y="175.26"/>
 </segment>
 <segment>
 <pinref part="GND9" gate="1" pin="GND"/>
@@ -17109,6 +17110,7 @@ Siemens, distributor Buerklin, 11G766</description>
 <pinref part="C8" gate="G$1" pin="+"/>
 <wire x1="88.9" y1="172.72" x2="99.06" y2="172.72" width="0.1524" layer="91"/>
 <wire x1="88.9" y1="170.18" x2="88.9" y2="172.72" width="0.1524" layer="91"/>
+<junction x="88.9" y="172.72"/>
 </segment>
 </net>
 <net name="N$24" class="0">
