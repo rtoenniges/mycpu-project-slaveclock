@@ -174,14 +174,14 @@
                 ; declare variables
                 
                 DCF77LIB        EQU 60h
-                OUTPUT          EQU 2382h     ;Hardware adress of SCC-Board (Clock on bit 0 & 1)
+                OUTPUT          EQU 3000h     ;Hardware adress of SCC-Board (Clock on bit 0 & 1)
                 
-                REFRESH_DELAY    SET 30       ;Timer division factor for clock sync (30 = ~1s)
+                REFRESH_DELAY    SET 7        ;Timer division factor for clock (7 = ~250ms)
                 IMPULS_DELAY     SET 15       ;Timer division factor for clock impuls lenght (15 = ~0,5s)
                 
                 VAR_dcfLibEntry     DS    2
     800A 00     VAR_refreshHandle   DB    0
-    800B 1E     VAR_refreshTimerDiv DB    REFRESH_DELAY  
+    800B 07     VAR_refreshTimerDiv DB    REFRESH_DELAY  
     800C 0F     VAR_impulsTimerDiv  DB    IMPULS_DELAY   
     800D 00     VAR_startImpuls     DB    0
     800E 00     VAR_currentHour     DB    0
@@ -416,14 +416,14 @@
     821F 7044           CMP #'d'    ;Parameter -d means with DCF77-Lib
     8221 182F82         JNZ _skp1
     8224 7A             PHR
-    8225 1A6C83         JSR loadDCF77
+    8225 1A7483         JSR loadDCF77
     8228 8A             PLR
     8229 175382         JPC _skp3
     822C 100D82         JMP _skp0
     822F 7042   _skp1   CMP #'b'    ;Parameter -b means with Backupfile
     8231 183F82         JNZ _skp2
     8234 7A             PHR
-    8235 1AAC83         JSR getBackup
+    8235 1AB483         JSR getBackup
     8238 8A             PLR
     8239 175382         JPC _skp3
     823C 100D82         JMP _skp0
@@ -442,14 +442,14 @@
                 
                         ;Send sync impuls
     825C 3001           LDA #1
-    825E 1AD782         JSR imp0
+    825E 1ADF82         JSR imp0
                 
                         ;Get clock data from user
-    8261 1A8983         JSR getClock        
+    8261 1A9183         JSR getClock        
                 
                         ;Setup timer interrupt (Refresh cycle) 
     8264 2C     init1   CLA
-    8265 6C8882         LPT  #refreshInt  
+    8265 6C9082         LPT  #refreshInt  
     8268 1B1203         JSR  (KERN_MULTIPLEX) 
     826B 420A80         STAA VAR_refreshHandle  ;Save adress of timerhandle
                 
@@ -458,7 +458,7 @@
                 
                 termfunc  
                         ;uninstall idle function
-    8270 6C5F83         LPT #idle
+    8270 6C6783         LPT #idle
     8273 04             CLC
     8274 1BEA02         JSR (KERN_SETIDLEFUNC)
                 
@@ -471,141 +471,146 @@
                         ;unload dcf lib
     8282 3060   term0   LDA #DCF77LIB
     8284 1BD002         JSR (KERN_LIBUNLOAD)
-    8287 1F             RTS
+                
+                        ;set outputs to zero
+    8287 320030         LDAA OUTPUT
+    828A D0FC           AND #FCh
+    828C 420030         STAA OUTPUT
+    828F 1F             RTS
                 
                 ;--------------------------------------------------------- 
                 ;Timer interrupt (Check system time, set slave clock, sync with dcf77)
                 ;---------------------------------------------------------   
                 ;Check system time -> set clock
                 refreshInt
-    8288 8D0B80         DECA VAR_refreshTimerDiv
-    828B 18BB82         JNZ impuls
-    828E 301E           LDA #REFRESH_DELAY
-    8290 420B80         STAA VAR_refreshTimerDiv    
+    8290 8D0B80         DECA VAR_refreshTimerDiv
+    8293 18C382         JNZ impuls
+    8296 3007           LDA #REFRESH_DELAY
+    8298 420B80         STAA VAR_refreshTimerDiv    
                 
                         ;Get system time
-    8293 04             CLC
-    8294 1B9A02         JSR (KERN_GETSETTIME)
-    8297 700D           CMP #13
-    8299 169E82         JNC ref0
+    829B 04             CLC
+    829C 1B9A02         JSR (KERN_GETSETTIME)
+    829F 700D           CMP #13
+    82A1 16A682         JNC ref0
                         ;Hour is greater than 12 -> subtract 12
-    829C 900C           SBC #12
-    829E 420E80 ref0    STAA VAR_currentHour
-    82A1 550F80         STXA VAR_currentMinute
+    82A4 900C           SBC #12
+    82A6 420E80 ref0    STAA VAR_currentHour
+    82A9 550F80         STXA VAR_currentMinute
                 
                         ;Compare clock and system time
-    82A4 320E80         LDAA VAR_currentHour
-    82A7 722280         CMPA VAR_clockHour
-    82AA 18B682         JNZ ref1
-    82AD 320F80         LDAA VAR_currentMinute
-    82B0 722380         CMPA VAR_clockMinute
-    82B3 19BB82         JPZ impuls
-    82B6 3001   ref1    LDA #1
-    82B8 420D80         STAA VAR_startImpuls
+    82AC 320E80         LDAA VAR_currentHour
+    82AF 722280         CMPA VAR_clockHour
+    82B2 18BE82         JNZ ref1
+    82B5 320F80         LDAA VAR_currentMinute
+    82B8 722380         CMPA VAR_clockMinute
+    82BB 19C382         JPZ impuls
+    82BE 3001   ref1    LDA #1
+    82C0 420D80         STAA VAR_startImpuls
                 
                 ;Generate clock impuls
                 impuls
-    82BB 8D0C80         DECA VAR_impulsTimerDiv
-    82BE 181883         JNZ dcf77
-    82C1 300F           LDA #IMPULS_DELAY
-    82C3 420C80         STAA VAR_impulsTimerDiv
+    82C3 8D0C80         DECA VAR_impulsTimerDiv
+    82C6 182083         JNZ dcf77
+    82C9 300F           LDA #IMPULS_DELAY
+    82CB 420C80         STAA VAR_impulsTimerDiv
                 
                         ;Set output to 0
-    82C6 320D80         LDAA VAR_startImpuls
-    82C9 18D782         JNZ imp0
-    82CC 328223         LDAA OUTPUT
-    82CF D0FC           AND #FCh
-    82D1 428223         STAA OUTPUT
-    82D4 101883         JMP dcf77
+    82CE 320D80         LDAA VAR_startImpuls
+    82D1 18DF82         JNZ imp0
+    82D4 320030         LDAA OUTPUT
+    82D7 D0FC           AND #FCh
+    82D9 420030         STAA OUTPUT
+    82DC 102083         JMP dcf77
                 
                         ;Set output to 10 or 01
-    82D7 322180 imp0    LDAA VAR_impuls
-    82DA 7003           CMP #3
-    82DC 18E482         JNZ imp1
-    82DF 3001           LDA #1
-    82E1 422180         STAA VAR_impuls
-    82E4 328223 imp1    LDAA OUTPUT
-    82E7 D0FC           AND #FCh
-    82E9 E22180         ORAA VAR_impuls
-    82EC 428223         STAA OUTPUT
-    82EF 7D2180         INCA VAR_impuls
-    82F2 2F0D80         STZ VAR_startImpuls
+    82DF 322180 imp0    LDAA VAR_impuls
+    82E2 7003           CMP #3
+    82E4 18EC82         JNZ imp1
+    82E7 3001           LDA #1
+    82E9 422180         STAA VAR_impuls
+    82EC 320030 imp1    LDAA OUTPUT
+    82EF D0FC           AND #FCh
+    82F1 E22180         ORAA VAR_impuls
+    82F4 420030         STAA OUTPUT
+    82F7 7D2180         INCA VAR_impuls
+    82FA 2F0D80         STZ VAR_startImpuls
                 
                         ;Increment clock time
-    82F5 7D2380         INCA VAR_clockMinute
-    82F8 322380         LDAA VAR_clockMinute
-    82FB 703C           CMP #60
-    82FD 181383         JNZ imp2
-    8300 2F2380         STZ VAR_clockMinute
-    8303 7D2280         INCA VAR_clockHour
-    8306 322280         LDAA VAR_clockHour
-    8309 700D           CMP #13
-    830B 181383         JNZ imp2
-    830E 900C           SBC #12
-    8310 422280         STAA VAR_clockHour 
+    82FD 7D2380         INCA VAR_clockMinute
+    8300 322380         LDAA VAR_clockMinute
+    8303 703C           CMP #60
+    8305 181B83         JNZ imp2
+    8308 2F2380         STZ VAR_clockMinute
+    830B 7D2280         INCA VAR_clockHour
+    830E 322280         LDAA VAR_clockHour
+    8311 700D           CMP #13
+    8313 181B83         JNZ imp2
+    8316 900C           SBC #12
+    8318 422280         STAA VAR_clockHour 
                 
-    8313 3001   imp2    LDA #1
-    8315 421180         STAA VAR_clockChanged
+    831B 3001   imp2    LDA #1
+    831D 421180         STAA VAR_clockChanged
                 
                 ;Sync system time with DCF77
                 dcf77
                         ;DCF77-Lib loaded?
-    8318 6C0880         LPT #VAR_dcfLibEntry
-    831B EA             LPA
-    831C 196D84         JPZ _RTS    
+    8320 6C0880         LPT #VAR_dcfLibEntry
+    8323 EA             LPA
+    8324 197584         JPZ _RTS    
                 
                         ;Get seconds
-    831F 3001           LDA #01h
-    8321 1B0880         JSR (VAR_dcfLibEntry)
-    8324 176D84         JPC _RTS
-    8327 186D84         JNZ _RTS    ;Sync every minute
-    832A 22             TAY
+    8327 3001           LDA #01h
+    8329 1B0880         JSR (VAR_dcfLibEntry)
+    832C 177584         JPC _RTS
+    832F 187584         JNZ _RTS    ;Sync every minute at xx:xx:00
+    8332 22             TAY
                         ;Get minutes
-    832B 3002           LDA #02h
-    832D 1B0880         JSR (VAR_dcfLibEntry)
-    8330 176D84         JPC _RTS
-                        ;JNZ _RTS    ;Sync every hour
-    8333 20             TAX
+    8333 3002           LDA #02h
+    8335 1B0880         JSR (VAR_dcfLibEntry)
+    8338 177584         JPC _RTS
+                        ;JNZ _RTS    ;Sync every hour at xx:00:00
+    833B 20             TAX
                         ;Get hours
-    8334 3003           LDA #03h
-    8336 1B0880         JSR (VAR_dcfLibEntry)
-    8339 176D84         JPC _RTS
-                        ;JNZ _RTS    ;Sync every day
+    833C 3003           LDA #03h
+    833E 1B0880         JSR (VAR_dcfLibEntry)
+    8341 177584         JPC _RTS
+                        ;JNZ _RTS    ;Sync every day at 00:00:00
                 
                         ;Set system time
-    833C 05             SEC
-    833D 1B9A02         JSR (KERN_GETSETTIME)
+    8344 05             SEC
+    8345 1B9A02         JSR (KERN_GETSETTIME)
                 
                         ;Get year
-    8340 3007           LDA #07h
-    8342 1B0880         JSR (VAR_dcfLibEntry)
-    8345 176D84         JPC _RTS
-    8348 22             TAY
+    8348 3007           LDA #07h
+    834A 1B0880         JSR (VAR_dcfLibEntry)
+    834D 177584         JPC _RTS
+    8350 22             TAY
                         ;Get month
-    8349 3006           LDA #06h
-    834B 1B0880         JSR (VAR_dcfLibEntry)
-    834E 176D84         JPC _RTS
-    8351 20             TAX
+    8351 3006           LDA #06h
+    8353 1B0880         JSR (VAR_dcfLibEntry)
+    8356 177584         JPC _RTS
+    8359 20             TAX
                         ;Get day
-    8352 3004           LDA #04h
-    8354 1B0880         JSR (VAR_dcfLibEntry)
-    8357 176D84         JPC _RTS
+    835A 3004           LDA #04h
+    835C 1B0880         JSR (VAR_dcfLibEntry)
+    835F 177584         JPC _RTS
                 
                         ;Set system date
-    835A 05             SEC
-    835B 1B9C02         JSR (KERN_GETSETDATE)
+    8362 05             SEC
+    8363 1B9C02         JSR (KERN_GETSETDATE)
                 
-    835E 1F             RTS
+    8366 1F             RTS
                 
                 ;--------------------------------------------------------- 
                 ;Idle function (Save slave clock value in Backupfile)
                 ;---------------------------------------------------------  
                 idle        
-    835F 321180         LDAA VAR_clockChanged
-    8362 196D84         JPZ _RTS
-    8365 1A4684         JSR writeBackup
-    8368 2F1180         STZ VAR_clockChanged
-    836B 1F             RTS
+    8367 321180         LDAA VAR_clockChanged
+    836A 197584         JPZ _RTS
+    836D 1A4E84         JSR writeBackup
+    8370 2F1180         STZ VAR_clockChanged
+    8373 1F             RTS
                 
                 ;--------------------------------------------------------- 
                 ;Helper functions   
@@ -613,162 +618,162 @@
                 ;Load DCF77-Lib
                 ;Carry = 0 on success
                 loadDCF77
-    836C 3060           LDA #DCF77LIB
-    836E 1BCC02         JSR (KERN_LIBSELECT)
-    8371 167C83         JNC lL0
-    8374 6CE580         LPT #textDCFError   
-    8377 1B4402         JSR (KERN_PRINTSTR)
-    837A 05             SEC
-    837B 1F             RTS
-    837C 3008   lL0     LDA #08h
-    837E 1BCA02         JSR (KERN_LIBCALL)
-    8381 6E0880         SPTA VAR_dcfLibEntry
-    8384 1BCE02         JSR (KERN_LIBDESELECT)
-    8387 04             CLC
-    8388 1F             RTS
+    8374 3060           LDA #DCF77LIB
+    8376 1BCC02         JSR (KERN_LIBSELECT)
+    8379 168483         JNC lL0
+    837C 6CE580         LPT #textDCFError   
+    837F 1B4402         JSR (KERN_PRINTSTR)
+    8382 05             SEC
+    8383 1F             RTS
+    8384 3008   lL0     LDA #08h
+    8386 1BCA02         JSR (KERN_LIBCALL)
+    8389 6E0880         SPTA VAR_dcfLibEntry
+    838C 1BCE02         JSR (KERN_LIBDESELECT)
+    838F 04             CLC
+    8390 1F             RTS
                 
                 ;Get clock data from user
                 getClock
                         ;Get clock hour
-    8389 6C9180         LPT #textHour
-    838C 1B4402         JSR (KERN_PRINTSTR)
-    838F 2C             CLA
-    8390 2D             CLX
-    8391 1B5802         JSR (KERN_INPUT)
-    8394 1B6202         JSR (KERN_STRING2NUMBER)
-    8397 422280         STAA VAR_clockHour
+    8391 6C9180         LPT #textHour
+    8394 1B4402         JSR (KERN_PRINTSTR)
+    8397 2C             CLA
+    8398 2D             CLX
+    8399 1B5802         JSR (KERN_INPUT)
+    839C 1B6202         JSR (KERN_STRING2NUMBER)
+    839F 422280         STAA VAR_clockHour
                 
                         ;Get clock minute
-    839A 6CBA80         LPT #textMinute
-    839D 1B4402         JSR (KERN_PRINTSTR)
-    83A0 2C             CLA
-    83A1 2D             CLX
-    83A2 1B5802         JSR (KERN_INPUT)
-    83A5 1B6202         JSR (KERN_STRING2NUMBER)
-    83A8 422380         STAA VAR_clockMinute
+    83A2 6CBA80         LPT #textMinute
+    83A5 1B4402         JSR (KERN_PRINTSTR)
+    83A8 2C             CLA
+    83A9 2D             CLX
+    83AA 1B5802         JSR (KERN_INPUT)
+    83AD 1B6202         JSR (KERN_STRING2NUMBER)
+    83B0 422380         STAA VAR_clockMinute
                 
-    83AB 1F             RTS
+    83B3 1F             RTS
                 
                 ;Check if backup file exists
                 ;Carry = 0 on success
                 getBackup         
-    83AC 1A1F84         JSR readBackup
-    83AF 16D283         JNC gB2
+    83B4 1A2784         JSR readBackup
+    83B7 16DA83         JNC gB2
                 
                         ;No backup found -> Creating one
-    83B2 6C2581         LPT #textNoBckp 
-    83B5 1B4402         JSR (KERN_PRINTSTR)
-    83B8 1A4684         JSR writeBackup
-    83BB 16C983         JNC gB1
-    83BE 6C5881         LPT #textBckpCreateErr ;Error creating backup
-    83C1 1B4402         JSR (KERN_PRINTSTR)
-    83C4 2F1080         STZ VAR_bckpFileHandle
-    83C7 05             SEC
-    83C8 1F             RTS       
-    83C9 6C3D81 gB1     LPT #textBckpCreated
-    83CC 1B4402         JSR (KERN_PRINTSTR)
-    83CF 2F1080         STZ VAR_bckpFileHandle
+    83BA 6C2581         LPT #textNoBckp 
+    83BD 1B4402         JSR (KERN_PRINTSTR)
+    83C0 1A4E84         JSR writeBackup
+    83C3 16D183         JNC gB1
+    83C6 6C5881         LPT #textBckpCreateErr ;Error creating backup
+    83C9 1B4402         JSR (KERN_PRINTSTR)
+    83CC 2F1080         STZ VAR_bckpFileHandle
+    83CF 05             SEC
+    83D0 1F             RTS       
+    83D1 6C3D81 gB1     LPT #textBckpCreated
+    83D4 1B4402         JSR (KERN_PRINTSTR)
+    83D7 2F1080         STZ VAR_bckpFileHandle
                 
                         ;Setup idle function (Backup saving)
-    83D2 6C5F83 gB2     LPT #idle
-    83D5 05             SEC
-    83D6 1BEA02         JSR (KERN_SETIDLEFUNC)
-    83D9 04             CLC
-    83DA 1F             RTS
+    83DA 6C6783 gB2     LPT #idle
+    83DD 05             SEC
+    83DE 1BEA02         JSR (KERN_SETIDLEFUNC)
+    83E1 04             CLC
+    83E2 1F             RTS
                 
                 ;Set pointer to backup data
                 setBlockPtr
-    83DB 6C2180         LPT #BackupStart
-    83DE 6E2480         SPTA dataPtr
-    83E1 3003           LDA #BackupEnd - BackupStart
-    83E3 422680         STAA dataSize
-    83E6 1F             RTS
+    83E3 6C2180         LPT #BackupStart
+    83E6 6E2480         SPTA dataPtr
+    83E9 3003           LDA #BackupEnd - BackupStart
+    83EB 422680         STAA dataSize
+    83EE 1F             RTS
                 
                 ;Set filepointer to first position   
                 setFilePtr       
-    83E7 6C2880         LPT #filePos0
-    83EA 321080         LDAA VAR_bckpFileHandle
-    83ED 05             SEC
-    83EE 1BE402         JSR (KERN_FTELLSEEK)
-    83F1 1F             RTS
+    83EF 6C2880         LPT #filePos0
+    83F2 321080         LDAA VAR_bckpFileHandle
+    83F5 05             SEC
+    83F6 1BE402         JSR (KERN_FTELLSEEK)
+    83F9 1F             RTS
                 
                 ;Open Backupfile (Read only)
                 ;Carry = 0 on success
                 openBackupRD 
-    83F2 6C1280         LPT #bckpFilePath
-    83F5 3001           LDA #FOPEN_RD
-    83F7 1B7202         JSR (KERN_FOPEN)
-    83FA 421080         STAA VAR_bckpFileHandle
-    83FD 20             TAX
-    83FE 180384         JNZ oBRD0
-    8401 05             SEC
-    8402 4D             SKA
-    8403 04     oBRD0   CLC
-    8404 1F             RTS
+    83FA 6C1280         LPT #bckpFilePath
+    83FD 3001           LDA #FOPEN_RD
+    83FF 1B7202         JSR (KERN_FOPEN)
+    8402 421080         STAA VAR_bckpFileHandle
+    8405 20             TAX
+    8406 180B84         JNZ oBRD0
+    8409 05             SEC
+    840A 4D             SKA
+    840B 04     oBRD0   CLC
+    840C 1F             RTS
                 
                 ;Open Backupfile (Read/Write)        
                 ;Carry = 0 on success        
                 openBackupRW        
-    8405 6C1280         LPT #bckpFilePath
-    8408 3003           LDA #FOPEN_RW
-    840A 1B7202         JSR (KERN_FOPEN)
-    840D 421080         STAA VAR_bckpFileHandle
-    8410 20             TAX
-    8411 181684         JNZ oBRW0
-    8414 05             SEC
-    8415 4D             SKA
-    8416 04     oBRW0   CLC
-    8417 1F             RTS
+    840D 6C1280         LPT #bckpFilePath
+    8410 3003           LDA #FOPEN_RW
+    8412 1B7202         JSR (KERN_FOPEN)
+    8415 421080         STAA VAR_bckpFileHandle
+    8418 20             TAX
+    8419 181E84         JNZ oBRW0
+    841C 05             SEC
+    841D 4D             SKA
+    841E 04     oBRW0   CLC
+    841F 1F             RTS
                 
                 ;Close Backupfile   
                 closeBackup
-    8418 321080         LDAA VAR_bckpFileHandle
-    841B 1B6802         JSR (KERN_FCLOSE)
-    841E 1F             RTS
+    8420 321080         LDAA VAR_bckpFileHandle
+    8423 1B6802         JSR (KERN_FCLOSE)
+    8426 1F             RTS
                 
                 ;Read data from Backupfile
                 ;Carry = 0 on success
                 readBackup
-    841F 1AF283         JSR openBackupRD
-    8422 162684         JNC rB0
-    8425 1F             RTS
-    8426 1ADB83 rB0     JSR setBlockPtr
-    8429 1AE783         JSR setFilePtr   
-    842C 6C2480         LPT #BckpFileStruct
-    842F 321080         LDAA VAR_bckpFileHandle
-    8432 04             CLC ;BlockRead
-    8433 1B7802         JSR (KERN_FILEBLOCKRDWR)
-    8436 0B             PHP
-    8437 1A1884         JSR closeBackup
-    843A 0F             PLP
-    843B 166D84         JNC _RTS
-    843E 6C7681         LPT #textBckpReadError  ;Error reading backup
-    8441 1B4402         JSR (KERN_PRINTSTR)
-    8444 05             SEC
-    8445 1F             RTS
+    8427 1AFA83         JSR openBackupRD
+    842A 162E84         JNC rB0
+    842D 1F             RTS
+    842E 1AE383 rB0     JSR setBlockPtr
+    8431 1AEF83         JSR setFilePtr   
+    8434 6C2480         LPT #BckpFileStruct
+    8437 321080         LDAA VAR_bckpFileHandle
+    843A 04             CLC ;BlockRead
+    843B 1B7802         JSR (KERN_FILEBLOCKRDWR)
+    843E 0B             PHP
+    843F 1A2084         JSR closeBackup
+    8442 0F             PLP
+    8443 167584         JNC _RTS
+    8446 6C7681         LPT #textBckpReadError  ;Error reading backup
+    8449 1B4402         JSR (KERN_PRINTSTR)
+    844C 05             SEC
+    844D 1F             RTS
                 
                 ;Wirte data to Backupfile
                 ;Carry = 0 on success
                 writeBackup        
-    8446 1A0584         JSR openBackupRW
-    8449 164D84         JNC wB0
-    844C 1F             RTS
-    844D 1ADB83 wB0     JSR setBlockPtr
-    8450 1AE783         JSR setFilePtr       
-    8453 6C2480         LPT #BckpFileStruct
-    8456 321080         LDAA VAR_bckpFileHandle
-    8459 05             SEC ;BlockWrite
-    845A 1B7802         JSR (KERN_FILEBLOCKRDWR)
-    845D 0B             PHP
-    845E 1A1884         JSR closeBackup 
-    8461 0F             PLP
-    8462 166D84         JNC _RTS     
-    8465 6CB081         LPT #textBckpWriteError  ;Error writing backup
-    8468 1B4402         JSR (KERN_PRINTSTR)
-    846B 05             SEC
-    846C 1F             RTS
+    844E 1A0D84         JSR openBackupRW
+    8451 165584         JNC wB0
+    8454 1F             RTS
+    8455 1AE383 wB0     JSR setBlockPtr
+    8458 1AEF83         JSR setFilePtr       
+    845B 6C2480         LPT #BckpFileStruct
+    845E 321080         LDAA VAR_bckpFileHandle
+    8461 05             SEC ;BlockWrite
+    8462 1B7802         JSR (KERN_FILEBLOCKRDWR)
+    8465 0B             PHP
+    8466 1A2084         JSR closeBackup 
+    8469 0F             PLP
+    846A 167584         JNC _RTS     
+    846D 6CB081         LPT #textBckpWriteError  ;Error writing backup
+    8470 1B4402         JSR (KERN_PRINTSTR)
+    8473 05             SEC
+    8474 1F             RTS
                 
-    846D 1F     _RTS    RTS
+    8475 1F     _RTS    RTS
                 
 
 
@@ -776,7 +781,7 @@ Segment Table:
 **************
 Segment Name                 Startaddr  Endaddr     Size  Type
 =========================================================================
-default                           8000     846D      46E  CODE  fixed
+default                           8000     8475      476  CODE  fixed
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 No errors found.

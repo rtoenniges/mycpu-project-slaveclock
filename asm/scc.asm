@@ -20,9 +20,9 @@
 ; declare variables
 
 DCF77LIB        EQU 60h
-OUTPUT          EQU 2382h     ;Hardware adress of SCC-Board (Clock on bit 0 & 1)
+OUTPUT          EQU 3000h     ;Hardware adress of SCC-Board (Clock on bit 0 & 1)
 
-REFRESH_DELAY    SET 30       ;Timer division factor for clock sync (30 = ~1s)
+REFRESH_DELAY    SET 7        ;Timer division factor for clock (7 = ~250ms)
 IMPULS_DELAY     SET 15       ;Timer division factor for clock impuls lenght (15 = ~0,5s)
 
 VAR_dcfLibEntry     DS    2
@@ -166,6 +166,11 @@ termfunc
         ;unload dcf lib
 term0   LDA #DCF77LIB
         JSR (KERN_LIBUNLOAD)
+        
+        ;set outputs to zero
+        LDAA OUTPUT
+        AND #FCh
+        STAA OUTPUT
         RTS
 
 ;--------------------------------------------------------- 
@@ -250,25 +255,24 @@ dcf77
         LPT #VAR_dcfLibEntry
         LPA
         JPZ _RTS    
- 
-               
+             
         ;Get seconds
         LDA #01h
         JSR (VAR_dcfLibEntry)
         JPC _RTS
-        JNZ _RTS    ;Sync every minute
+        JNZ _RTS    ;Sync every minute at xx:xx:00
         TAY
         ;Get minutes
         LDA #02h
         JSR (VAR_dcfLibEntry)
         JPC _RTS
-        ;JNZ _RTS    ;Sync every hour
+        ;JNZ _RTS    ;Sync every hour at xx:00:00
         TAX
         ;Get hours
         LDA #03h
         JSR (VAR_dcfLibEntry)
         JPC _RTS
-        ;JNZ _RTS    ;Sync every day
+        ;JNZ _RTS    ;Sync every day at 00:00:00
         
         ;Set system time
         SEC
