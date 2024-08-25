@@ -8,6 +8,6 @@ It provides support to connect an DCF77-Receiver and generates the alternating
 current to drive the clock._
 Also it displays the status of the time synchronization and the active clock output.
 
-**If you use this board and provided you have set the adress jumper to the default position, you
+**If you use this board and you have set the adress jumpers to the default position, you
 have to change the "OUTPUT" declaration in "scc.asm" to '3500h'!**
 
