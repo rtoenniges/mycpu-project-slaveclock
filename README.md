@@ -1,5 +1,5 @@
-# MyCPU_PRG_SCC
-A program written in assembler for the [MyCPU](http://www.mycpu.eu/) from Dennis Kuschel to control a slave clock (https://en.wikipedia.org/wiki/Slave_clock)
+# MyCPU_PRO_SCC
+An extension for the [MyCPU](http://www.mycpu.eu/) from Dennis Kuschel to get the timesignal DCF77 and control a slave clock (https://en.wikipedia.org/wiki/Slave_clock)
 
 ## Hardware
 - External module (Basic board)
