@@ -3,7 +3,7 @@
 ;******************************************
 ;********** Slave clock control ***********
 ;******************************************
-;*******  2016 by Robin Tönniges  *********
+;*******  2016 by Robin TÃ¶nniges  *********
 ;******************************************
 
 #include <sys.hsm>
@@ -22,7 +22,7 @@
 DCF77LIB        EQU 60h
 OUTPUT          EQU 3000h     ;Hardware adress of SCC-Board (Clock on bit 0 & 1)
 
-REFRESH_DELAY    SET 7        ;Timer division factor for clock (7 = ~250ms)
+REFRESH_DELAY    SET 7        ;Timer division factor for refresh cycle (7 = ~250ms)
 IMPULS_DELAY     SET 15       ;Timer division factor for clock impuls lenght (15 = ~0,5s)
 
 VAR_dcfLibEntry     DS    2
@@ -277,8 +277,7 @@ dcf77
         ;Set system time
         SEC
         JSR (KERN_GETSETTIME)
-        
-        
+                
         ;Get year
         LDA #07h
         JSR (VAR_dcfLibEntry)
@@ -323,7 +322,7 @@ loadDCF77
         JSR (KERN_PRINTSTR)
         SEC
         RTS
-lL0     LDA #08h
+lL0     LDA #09h
         JSR (KERN_LIBCALL)
         SPTA VAR_dcfLibEntry
         JSR (KERN_LIBDESELECT)
@@ -450,7 +449,7 @@ rB0     JSR setBlockPtr
         SEC
         RTS
 
-;Wirte data to Backupfile
+;Write data to Backupfile
 ;Carry = 0 on success
 writeBackup        
         JSR openBackupRW
