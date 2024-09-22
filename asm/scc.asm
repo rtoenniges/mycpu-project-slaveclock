@@ -7,35 +7,42 @@
 ;******************************************
 
 #include <sys.hsm>
-#include <tsr.hsm>
 #include <time.hsm> 
 #include <code.hsm> 
 #include <conio.hsm> 
 #include <ctype.hsm>
 #include <stdio.hsm>
-#include <sys.hsm>
 
+;Comment this line in if library should load on higher ROM-Page
+#DEFINE HIGH_ROM 
 
+ORG 8000h
+ DW 8002h
+ DW initfunc
+ DW termfunc
+ DW codestart
 ;-------------------------------------
 ; declare variables
 
-DCF77LIB        EQU 60h
-OUTPUT          EQU 3000h     ;Hardware adress of SCC-Board (Clock on bit 0 & 1)
+LIB_DCF77           EQU 60h
+HDW_OUTPUT          EQU 3000h     ;Hardware adress of SCC-Board (Clock on bit 0 & 1)
 
-REFRESH_DELAY    SET 7        ;Timer division factor for refresh cycle (7 = ~250ms)
-IMPULS_DELAY     SET 15       ;Timer division factor for clock impuls lenght (15 = ~0,5s)
+PAR_REFRESH_DELAY   SET 7        ;Timer division factor for refresh cycle (7 = ~250ms)
+PAR_IMPULS_DELAY    SET 15       ;Timer division factor for clock impuls lenght (15 = ~0,5s)
 
-VAR_dcfLibEntry     DS    2
 VAR_refreshHandle   DB    0
-VAR_refreshTimerDiv DB    REFRESH_DELAY  
-VAR_impulsTimerDiv  DB    IMPULS_DELAY   
+VAR_refreshTimerDiv DB    PAR_REFRESH_DELAY  
+VAR_impulsTimerDiv  DB    PAR_IMPULS_DELAY   
 VAR_startImpuls     DB    0
 VAR_currentHour     DB    0
 VAR_currentMinute   DB    0
-VAR_bckpFileHandle  DB    0
+VAR_bckpFileHandle  DW    0
 VAR_clockChanged    DB    0
 
-bckpFilePath        DB  "8:/etc/scc.dat",0
+FLG_timerInt        DW    0
+
+
+PAR_bckpFilePath        DB  "8:/etc/scc.dat",0
 
 ;Clock data will be saved in Backup-file
 ;-------------------------------------
@@ -47,46 +54,54 @@ BackupEnd
 ;-------------------------------------
 
 BckpFileStruct
-dataPtr             DS   2
+dataPtr             DW   BackupStart
 dataSize            DW   BackupEnd - BackupStart
-
 
 filePos0            DB   0,0,0
 
 
-textHelp            DB  "\rscc [-d] [-b]\r"
+STR_textHelp        DB  "\rscc [-d] [-b]\r"
                     DB  "Parameters:\r"
                     DB  "   -d use DCF77-Library\r"
                     DB  "   -b use Backupfile (will be created in 8:/etc/)\r",0
                     
-textHour            DB  "\rWhich hour does the clock show? [1-12]\r",0 
-textMinute          DB  "\rWhich minute does the clock show? [0-59]\r",0 
-textDCFError        DB  "\rFailed to load DCF77-Lib!\r",0 
-textUnknParam       DB  "\rUnknown parameter!\r"
+STR_textHour        DB  "\rWhich hour does the clock show? [1-12]\r",0 
+STR_textMinute      DB  "\rWhich minute does the clock show? [0-59]\r",0 
+STR_textDCFError    DB  "\rFailed to load DCF77-Lib!\r",0 
+STR_textUnknParam   DB  "\rUnknown parameter!\r"
                     DB  "scc -h for help",0
-textNoBckp          DB  "\rNo backup file found!\r",0
-textBckpCreated     DB  "\rNew backup file created!\r",0
-textBckpCreateErr   DB  "\rError creating backup file!\r",0
+					
+STR_textNoBckp      DB  "\rNo backup file found!\r",0
+STR_textBckpCreated DB  "\rNew backup file created!\r",0
 
-textBckpReadError   DB  "\rError reading backup file!\r"
-                    DB  "Try to delete 8:/etc/scc.dat\r",0
+STR_textBckpCreateErr   DB  "\rError creating backup file!\r",0
+
+STR_textBckpReadError   DB  "\rError reading backup file!\r"
+                        DB  "Try to delete 8:/etc/scc.dat\r",0
                     
-textBckpWriteError  DB  "\rError writing to backup file!\r"
-                    DB  "Try to delete 8:/etc/scc.dat\r",0
+STR_textBckpWriteError  DB  "\rError writing to backup file!\r"
+                        DB  "Try to delete 8:/etc/scc.dat\r",0
 
 
 ;-------------------------------------
 ; begin of assembly code
 
 codestart
-#include <tsr.hsm>
 
+;TSR initialization
+;---------------------------------------------------------  
 initfunc  
-
-        ;move this program to a separate memory page
-        ;LPT  #codestart
-        ;LDA  #0Eh
-        ;JSR  (KERN_MULTIPLEX)  ;may fail on older kernel
+        CLC
+        JSR (KERN_ISLOADED)
+        CLA
+        JPC _RTS
+		
+#IFDEF HIGH_ROM
+		;move this program to a separate memory page
+		LPT  #codestart
+		LDA  #0Eh
+		JSR  (KERN_MULTIPLEX)  ;may fail on older kernel
+#ENDIF
 
 ;Get parameter from console
         LDX #29h
@@ -109,10 +124,16 @@ _skp0   LPA
         CMP #'d'    ;Parameter -d means with DCF77-Lib
         JNZ _skp1
         PHR
-        JSR loadDCF77
-        PLR
-        JPC _skp3
+        
+        LDA #LIB_DCF77
+        JSR (KERN_LIBSELECT)
+        JNC _skp5
+        LPT #STR_textDCFError   
+        JSR (KERN_PRINTSTR)
+		
+_skp5   PLR
         JMP _skp0
+		
 _skp1   CMP #'b'    ;Parameter -b means with Backupfile
         JNZ _skp2
         PHR
@@ -120,20 +141,23 @@ _skp1   CMP #'b'    ;Parameter -b means with Backupfile
         PLR
         JPC _skp3
         JMP _skp0
+		
 _skp2   CMP #'h'    ;Parameter -h means show help
         JNZ _skp4
-        LPT #textHelp
+        LPT #STR_textHelp
         JSR (KERN_PRINTSTR)
         JMP _skp3
-_skp4   LPT #textUnknParam
+_skp4   LPT #STR_textUnknParam
         JSR (KERN_PRINTSTR)
-_skp3   LDA #1
+_skp3   LDA #1 ;Error leave program
         RTS          
    
                 
-init0   LDAA VAR_bckpFileHandle
+init0   LDAA VAR_bckpFileHandle+1
         JNZ init1
-        
+        LDAA VAR_bckpFileHandle
+		STAA VAR_bckpFileHandle+1
+		
         ;Send sync impuls
         LDA #1
         JSR imp0
@@ -141,16 +165,22 @@ init0   LDAA VAR_bckpFileHandle
         ;Get clock data from user
         JSR getClock        
         
-        ;Setup timer interrupt (Refresh cycle) 
-init1   CLA
+        
+init1   LPT #idle ;Setup idle function
+        SEC
+        JSR (KERN_SETIDLEFUNC)
+
+        CLA ;Setup timer interrupt (Refresh cycle) 
         LPT  #refreshInt  
         JSR  (KERN_MULTIPLEX) 
         STAA VAR_refreshHandle  ;Save adress of timerhandle
         
-        CLA
-        RTS
-        
-        
+        CLA  ;return zero (success, TSR stays resistent in memory)
+        JMP (KERN_EXITTSR)
+       
+	   
+;Termination function
+;---------------------------------------------------------          
 termfunc  
         ;uninstall idle function
         LPT #idle
@@ -159,31 +189,59 @@ termfunc
    
         ;uninstall timer interrupt
         LDXA VAR_refreshHandle
-        JPZ  term0
+        JPZ  _term0
         LDA  #1
         JSR  (KERN_MULTIPLEX)  
 
         ;unload dcf lib
-term0   LDA #DCF77LIB
-        JSR (KERN_LIBUNLOAD)
+_term0  ;LDA #LIB_DCF77
+        ;JSR (KERN_LIBUNLOAD)
         
         ;set outputs to zero
-        LDAA OUTPUT
+        LDAA HDW_OUTPUT
         AND #FCh
-        STAA OUTPUT
+        STAA HDW_OUTPUT
         RTS
 
 ;--------------------------------------------------------- 
-;Timer interrupt (Check system time, set slave clock, sync with dcf77)
+;Timer interrupt
 ;---------------------------------------------------------   
 ;Check system time -> set clock
 refreshInt
         DECA VAR_refreshTimerDiv
         JNZ impuls
-        LDA #REFRESH_DELAY
+        LDA #PAR_REFRESH_DELAY
         STAA VAR_refreshTimerDiv    
-        
-        ;Get system time
+        LDA #1
+		STAA FLG_timerInt
+
+;Generate clock impuls
+impuls
+        DECA VAR_impulsTimerDiv
+        JNZ _RTS
+        LDA #PAR_IMPULS_DELAY
+        STAA VAR_impulsTimerDiv
+        LDA #1
+		STAA FLG_timerInt+1		
+
+        RTS
+
+;--------------------------------------------------------- 
+;Idle function
+;---------------------------------------------------------  
+idle        
+        ;Write to backup file
+		LDAA VAR_bckpFileHandle
+        JPZ ref
+		LDAA VAR_clockChanged
+        JPZ ref
+        JSR writeBackup
+        STZA VAR_clockChanged
+		
+;Get system time
+ref     LDAA FLG_timerInt
+		JPZ imp
+		STZA FLG_timerInt
         CLC
         JSR (KERN_GETSETTIME)
         CMP #13
@@ -202,42 +260,38 @@ ref0    STAA VAR_currentHour
         JPZ impuls
 ref1    LDA #1
         STAA VAR_startImpuls
-        
 
-;Generate clock impuls
-impuls
-        DECA VAR_impulsTimerDiv
-        JNZ dcf77
-        LDA #IMPULS_DELAY
-        STAA VAR_impulsTimerDiv
-        
-        ;Set output to 0
-        LDAA VAR_startImpuls
+;Clock Impuls
+imp     ;Set HDW_OUTPUT to 0
+        LDAA FLG_timerInt+1
+		JPZ _RTS
+		STZA FLG_timerInt+1
+		LDAA VAR_startImpuls
         JNZ imp0
-        LDAA OUTPUT
+        LDAA HDW_OUTPUT
         AND #FCh
-        STAA OUTPUT
-        JMP dcf77
+        STAA HDW_OUTPUT
+        RTS
         
-        ;Set output to 10 or 01
+        ;Set HDW_OUTPUT to 10 or 01
 imp0    LDAA VAR_impuls
         CMP #3
         JNZ imp1
         LDA #1
         STAA VAR_impuls
-imp1    LDAA OUTPUT
+imp1    LDAA HDW_OUTPUT
         AND #FCh
         ORAA VAR_impuls
-        STAA OUTPUT
+        STAA HDW_OUTPUT
         INCA VAR_impuls
-        STZ VAR_startImpuls
+        STZA VAR_startImpuls
         
         ;Increment clock time
         INCA VAR_clockMinute
         LDAA VAR_clockMinute
         CMP #60
         JNZ imp2
-        STZ VAR_clockMinute
+        STZA VAR_clockMinute
         INCA VAR_clockHour
         LDAA VAR_clockHour
         CMP #13
@@ -247,92 +301,17 @@ imp1    LDAA OUTPUT
 
 imp2    LDA #1
         STAA VAR_clockChanged
-
-
-;Sync system time with DCF77
-dcf77
-        ;DCF77-Lib loaded?
-        LPT #VAR_dcfLibEntry
-        LPA
-        JPZ _RTS    
-             
-        ;Get seconds
-        LDA #01h
-        JSR (VAR_dcfLibEntry)
-        JPC _RTS
-        JNZ _RTS    ;Sync every minute at xx:xx:00
-        TAY
-        ;Get minutes
-        LDA #02h
-        JSR (VAR_dcfLibEntry)
-        JPC _RTS
-        ;JNZ _RTS    ;Sync every hour at xx:00:00
-        TAX
-        ;Get hours
-        LDA #03h
-        JSR (VAR_dcfLibEntry)
-        JPC _RTS
-        ;JNZ _RTS    ;Sync every day at 00:00:00
-        
-        ;Set system time
-        SEC
-        JSR (KERN_GETSETTIME)
-                
-        ;Get year
-        LDA #07h
-        JSR (VAR_dcfLibEntry)
-        JPC _RTS
-        TAY
-        ;Get month
-        LDA #06h
-        JSR (VAR_dcfLibEntry)
-        JPC _RTS
-        TAX
-        ;Get day
-        LDA #04h
-        JSR (VAR_dcfLibEntry)
-        JPC _RTS
-        
-        ;Set system date
-        SEC
-        JSR (KERN_GETSETDATE)
-        
-        RTS
-
-;--------------------------------------------------------- 
-;Idle function (Save slave clock value in Backupfile)
-;---------------------------------------------------------  
-idle        
-        LDAA VAR_clockChanged
-        JPZ _RTS
-        JSR writeBackup
-        STZ VAR_clockChanged
-        RTS
-        
+		
+		RTS
+       
 ;--------------------------------------------------------- 
 ;Helper functions   
 ;---------------------------------------------------------  
-;Load DCF77-Lib
-;Carry = 0 on success
-loadDCF77
-        LDA #DCF77LIB
-        JSR (KERN_LIBSELECT)
-        JNC lL0
-        LPT #textDCFError   
-        JSR (KERN_PRINTSTR)
-        SEC
-        RTS
-lL0     LDA #09h
-        JSR (KERN_LIBCALL)
-        SPTA VAR_dcfLibEntry
-        JSR (KERN_LIBDESELECT)
-        CLC
-        RTS
         
 ;Get clock data from user
 getClock
         ;Get clock hour
-        LPT #textHour
+        LPT #STR_textHour
         JSR (KERN_PRINTSTR)
         CLA
         CLX
@@ -341,7 +320,7 @@ getClock
         STAA VAR_clockHour
 
         ;Get clock minute
-        LPT #textMinute
+        LPT #STR_textMinute
         JSR (KERN_PRINTSTR)
         CLA
         CLX
@@ -355,27 +334,26 @@ getClock
 ;Carry = 0 on success
 getBackup         
         JSR readBackup
-        JNC gB2
-        
+        JPC gB0
+        LDAA VAR_bckpFileHandle
+		STAA VAR_bckpFileHandle+1
+		JMP gB2
+		
         ;No backup found -> Creating one
-        LPT #textNoBckp 
+gB0     LPT #STR_textNoBckp 
         JSR (KERN_PRINTSTR)
         JSR writeBackup
         JNC gB1
-        LPT #textBckpCreateErr ;Error creating backup
+        LPT #STR_textBckpCreateErr ;Error creating backup
         JSR (KERN_PRINTSTR)
-        STZ VAR_bckpFileHandle
+        STZA VAR_bckpFileHandle
         SEC
         RTS       
-gB1     LPT #textBckpCreated
+		
+gB1     LPT #STR_textBckpCreated
         JSR (KERN_PRINTSTR)
-        STZ VAR_bckpFileHandle
-        
-        ;Setup idle function (Backup saving)
-gB2     LPT #idle
-        SEC
-        JSR (KERN_SETIDLEFUNC)
-        CLC
+		
+gB2     CLC
         RTS
 
 ;Set pointer to backup data
@@ -397,7 +375,7 @@ setFilePtr
 ;Open Backupfile (Read only)
 ;Carry = 0 on success
 openBackupRD 
-        LPT #bckpFilePath
+        LPT #PAR_bckpFilePath
         LDA #FOPEN_RD
         JSR (KERN_FOPEN)
         STAA VAR_bckpFileHandle
@@ -411,7 +389,7 @@ oBRD0   CLC
 ;Open Backupfile (Read/Write)        
 ;Carry = 0 on success        
 openBackupRW        
-        LPT #bckpFilePath
+        LPT #PAR_bckpFilePath
         LDA #FOPEN_RW
         JSR (KERN_FOPEN)
         STAA VAR_bckpFileHandle
@@ -434,7 +412,7 @@ readBackup
         JSR openBackupRD
         JNC rB0
         RTS
-rB0     JSR setBlockPtr
+rB0     ;JSR setBlockPtr
         JSR setFilePtr   
         LPT #BckpFileStruct
         LDAA VAR_bckpFileHandle
@@ -444,7 +422,7 @@ rB0     JSR setBlockPtr
         JSR closeBackup
         PLP
         JNC _RTS
-        LPT #textBckpReadError  ;Error reading backup
+        LPT #STR_textBckpReadError  ;Error reading backup
         JSR (KERN_PRINTSTR)
         SEC
         RTS
@@ -455,7 +433,7 @@ writeBackup
         JSR openBackupRW
         JNC wB0
         RTS
-wB0     JSR setBlockPtr
+wB0     ;JSR setBlockPtr
         JSR setFilePtr       
         LPT #BckpFileStruct
         LDAA VAR_bckpFileHandle
@@ -465,7 +443,7 @@ wB0     JSR setBlockPtr
         JSR closeBackup 
         PLP
         JNC _RTS     
-        LPT #textBckpWriteError  ;Error writing backup
+        LPT #STR_textBckpWriteError  ;Error writing backup
         JSR (KERN_PRINTSTR)
         SEC
         RTS
